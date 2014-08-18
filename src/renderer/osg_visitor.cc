@@ -7,9 +7,14 @@
 #include <osgShadow/ShadowedScene>
 #include <osgShadow/ShadowMap>
 #include <osgShadow/SoftShadowMap>
+#include <osgShadow/StandardShadowMap>
+#include <osgShadow/ShadowTexture>
 #include <osgShadow/MinimalDrawBoundsShadowMap>
 #include <osgShadow/MinimalCullBoundsShadowMap>
 #include <osgShadow/ParallelSplitShadowMap>
+#include <osgShadow/LightSpacePerspectiveShadowMap>
+#include <osgShadow/ViewDependentShadowMap>
+
 #include <osgDB/WriteFile>
 #include <boost/lexical_cast.hpp>
 #include <boost/format.hpp>
@@ -26,6 +31,10 @@
 using namespace osg;
 namespace renderer
 {
+
+  const int ReceivesShadowTraversalMask = 0x2;
+  const int CastsShadowTraversalMask = 0x1;
+
   inline Quat _osg_quat(const ode::Object& b)
   {
     const dReal*q = dBodyGetQuaternion(b.get_body());
@@ -202,6 +211,8 @@ namespace renderer
       for (size_t j = 0; j < nb; ++j)
       {
         ref_ptr<Geode> geode_sqr = _create_sqr(ground_x, ground_y);
+	geode_sqr->setNodeMask(ReceivesShadowTraversalMask);
+
         ref_ptr<PositionAttitudeTransform>  pat(new PositionAttitudeTransform());
         pat->setPosition(Vec3((i - nb / 2) * ground_x,
                               (j - nb / 2) * ground_y, 0));
@@ -216,24 +227,36 @@ namespace renderer
     Vec3 center(0.0f, 0.0f, 0.0f);
     float radius = 500;
     Vec3 light_position(center + Vec3(0.0f, 0.0f, 10));
-
+  
 
 
     osg::ref_ptr<osgShadow::ShadowedScene> shadowedScene = new osgShadow::ShadowedScene;
+    shadowedScene->setReceivesShadowTraversalMask(ReceivesShadowTraversalMask);
+    shadowedScene->setCastsShadowTraversalMask(CastsShadowTraversalMask);
+    
      //    osgShadow::MinimalDrawBoundsShadowMap* sm = new
      //    osgShadow::MinimalDrawBoundsShadowMap;
-    osg::ref_ptr<osgShadow::MinimalCullBoundsShadowMap> sm = new
-                                                             osgShadow::MinimalCullBoundsShadowMap;
+    // osg::ref_ptr<osgShadow::MinimalCullBoundsShadowMap> sm = new
+    //  osgShadow::MinimalCullBoundsShadowMap;
     //osg::ref_ptr<osgShadow::ShadowMap> sm = new osgShadow::ShadowMap;
-    // osg::ref_ptr<osgShadow::ParallelSplitShadowMap> sm =
-    //   new osgShadow::ParallelSplitShadowMap;
+    
 
-     //    osg::ref_ptr<osgShadow::SoftShadowMap> sm = new osgShadow::SoftShadowMap;
-     //sm->setTextureSize(osg::Vec2s(1024*2, 1024*2));
-     //sm->setAmbientBias(osg::Vec2(0.9, 0.9));
-     // sm->setMaxFarDistance(20);
-     // sm->setPolygonOffset(osg::Vec2(0, 0));
-     //sm->enableShadowGLSLFiltering(false);
+    // OK  osg::ref_ptr<osgShadow::ParallelSplitShadowMap> sm =
+    // new osgShadow::ParallelSplitShadowMap;
+    //osg::ref_ptr<osgShadow::LightSpacePerspectiveShadowMap> sm =
+    // new osgShadow::LightSpacePerspectiveShadowMap;
+    
+    //    osg::ref_ptr<osgShadow::StandardShadowMap> sm =
+    //  new osgShadow::StandardShadowMap;
+    osg::ref_ptr<osgShadow::ShadowTexture> sm =
+      new osgShadow::ShadowTexture;
+
+    //             osg::ref_ptr<osgShadow::SoftShadowMap> sm = new osgShadow::SoftShadowMap;
+    //sm->setTextureSize(osg::Vec2s(1024*2, 1024*2));
+    // sm->setAmbientBias(osg::Vec2(0.5, 0.4));
+     //      sm->setMaxFarDistance(20);
+    // sm->setPolygonOffset(osg::Vec2(0, 0));
+     //     sm->enableShadowGLSLFiltering(false);
     shadowedScene->setShadowTechnique(sm.get());
     LightSource*ls = new LightSource;
     ls->getLight()->setPosition(osg::Vec4(light_position, 1));
@@ -302,7 +325,7 @@ namespace renderer
       ref_ptr<NodeCallback> cb(new UpdateCallback(e));
       pat->setUpdateCallback(cb.get());
       _root->addChild(pat.get());
-
+      //      geode->setNodeMask(CastsShadowTraversalMask);
       _set_tm(geode.get());
     }
   }
