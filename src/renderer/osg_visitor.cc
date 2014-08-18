@@ -319,7 +319,7 @@ namespace renderer
 	addDrawable(new ShapeDrawable
                     (new Capsule(Vec3f(),
                                  e.get_radius(),
-                                 e.get_length())));
+                                 e.get_length() - e.get_radius() * 2)));
       ref_ptr<PositionAttitudeTransform>  pat(new PositionAttitudeTransform());
       pat->addChild(geode.get());
       ref_ptr<NodeCallback> cb(new UpdateCallback(e));
