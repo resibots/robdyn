@@ -36,7 +36,7 @@ namespace ode
   class Environment
   {
     public:
-      static const float time_step = 0.05;
+      BOOST_STATIC_CONSTEXPR float time_step = 0.05;
        // constructor
     Environment() :
         _ground(0x0), _pitch(0), _roll(0), _z(0)
