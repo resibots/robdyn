@@ -24,6 +24,7 @@
 # define        ENVIRONMENT_HH_
 
 #include <iostream>
+#include <boost/config.hpp>
 #include <ode/ode.h>
 #include <ode/common.h>
 #include <set>

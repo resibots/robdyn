@@ -169,35 +169,15 @@ namespace ode
 
      //probably useless
     dJointGetFeedback(_amotor);
-    const dReal*r1 = dBodyGetAngularVel(_o1.get_body());
-    Eigen::Vector3d v1(r1[0], r1[1], r1[2]);
-    const dReal*r2 = dBodyGetAngularVel(_o2.get_body());
-    Eigen::Vector3d v2(r2[0], r2[1], r2[2]);
-    /*dVector3 p;
-      dJointGetBallAnchor(_ball, p);
-    Eigen::Vector3d pos(p[0], p[1], p[2]);
-    Eigen::Vector3d v = v1 - v2;
-
      //get torques
     Eigen::Vector3d t1(_feedback.t1[0], _feedback.t1[1], _feedback.t1[2]);
     Eigen::Vector3d t2(_feedback.t2[0], _feedback.t2[1], _feedback.t2[2]);
      //forces
     Eigen::Vector3d f1(_feedback.f1[0], _feedback.f1[1], _feedback.f1[2]);
     Eigen::Vector3d f2(_feedback.f2[0], _feedback.f2[1], _feedback.f2[2]);
+    
+    _torque = t1.norm();
 
-    t1 = t1 + (f1.cross(pos - _o1.get_pos()));
-    t2 = t2 + (f2.cross(pos - _o2.get_pos()));
-
-     // plot torque = f(t) (approximation : projected on global x axis
-    Eigen::Vector3d xaxis(1, 0, 0);
-    _torque = t1.dot(xaxis);
-
-     // plot vrot = f(t) projected on global x axis
-    _vrot = v.dot(xaxis);
-
-     // real power computation
-    _power = fabs(t1.dot(v)); //both positive and negative work added ...? ...
-    //_power = t1 * v; // essai decompte travail négatif*/
   }
 
 }

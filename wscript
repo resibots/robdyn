@@ -17,7 +17,7 @@ def set_options(opt):
     opt.tool_options('compiler_cxx')
     opt.tool_options('boost')
     opt.tool_options('ode')
-    opt.tool_options('eigen2')
+    opt.tool_options('eigen')
 
     opt.add_option('--disable_osg', type='string', help='disable open scene graph support (no visualization)', dest='disable_osg')
     opt.add_option('--64bits', type='string', help='enable 64 bits support', dest='bits64')
@@ -33,7 +33,7 @@ def configure(conf):
 
     conf.check_tool('compiler_cxx')
     ode_found = conf.check_tool('ode')
-    eigen2_found = conf.check_tool('eigen2')
+    eigen_found = conf.check_tool('eigen')
     conf.check_tool('boost')
     conf.check_boost(lib='', min_version='1.35')
     conf.env['LIB_OSG'] = [ 'GLU', 'osg', 'osgDB', 'osgUtil', 'osgGA',

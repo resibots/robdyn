@@ -4,7 +4,7 @@
 #include "ode/capped_cyl.hh"
 
 using namespace ode;
-USING_PART_OF_NAMESPACE_EIGEN
+using namespace Eigen;
 
 namespace robot
 {

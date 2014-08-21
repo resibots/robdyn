@@ -13,15 +13,17 @@ def build(bld):
                   ode/environment.cc \
                   ode/environment_hexa.cc\
                   robot/quadruped.cc \
-                  robot/hybrid.cc \
-		  robot/hexapod.cc'
+                  robot/hexapod.cc \
+                  robot/hybrid.cc' 
+	
     obj.includes = '.'
     obj.target = 'robdyn'
     obj.want_libtool = 1
-    obj.uselib = 'ODE BOOST EIGEN2'
+    obj.uselib = 'ODE BOOST EIGEN'
 
     # viewer
     if osg:
+        print 'building with osg'
         obj = bld.new_task_gen('cxx', 'staticlib')
         obj.source = 'renderer/osg_visitor.cc \
                       renderer/osg_hud.cc \
@@ -30,21 +32,21 @@ def build(bld):
         obj.includes = '.'
         obj.target = 'robdyn_osgvisitor'
         obj.want_libtool = 1
-	obj.uselib = ' ODE BOOST EIGEN2 OSG'
+	obj.uselib = ' ODE BOOST EIGEN OSG'
 
         # demo programs are built only if osg is detected
         obj = bld.new_task_gen('cxx', 'program')
         obj.source = "demos/basic.cc"
         obj.includes = '.'
         obj.target = 'basic'
-        obj.uselib = ' ODE BOOST EIGEN2 OSG'
+        obj.uselib = ' ODE BOOST EIGEN OSG'
         obj.uselib_local = 'robdyn robdyn_osgvisitor'
 
         obj = bld.new_task_gen('cxx', 'program')
         obj.source = "demos/test_mx28.cc"
         obj.includes = '.'
         obj.target = 'test_mx28'
-        obj.uselib = ' ODE BOOST EIGEN2 OSG'
+        obj.uselib = ' ODE BOOST EIGEN OSG'
         obj.uselib_local = 'robdyn robdyn_osgvisitor'
 
 
@@ -52,7 +54,7 @@ def build(bld):
         obj.source = "demos/rescue.cc"
         obj.includes = '.'
         obj.target = 'rescue'
-        obj.uselib = 'ODE BOOST EIGEN2  OSG'
+        obj.uselib = 'ODE BOOST EIGEN  OSG'
         obj.uselib_local = 'robdyn robdyn_osgvisitor'
 
 
@@ -60,21 +62,21 @@ def build(bld):
         obj.source = "demos/quadruped.cc"
         obj.includes = '.'
         obj.target = 'quadruped'
-        obj.uselib = 'ODE BOOST EIGEN2 OSG'
+        obj.uselib = 'ODE BOOST EIGEN OSG'
         obj.uselib_local = 'robdyn robdyn_osgvisitor'
 
         obj = bld.new_task_gen('cxx', 'program')
         obj.source = "demos/walking.cc"
         obj.includes = '.'
         obj.target = 'walking'
-        obj.uselib = 'ODE BOOST EIGEN2 OSG'
+        obj.uselib = 'ODE BOOST EIGEN OSG'
         obj.uselib_local = 'robdyn robdyn_osgvisitor'
 
         obj = bld.new_task_gen('cxx', 'program')
         obj.source = "demos/hexapod.cc demos/controllerPhase6D.cpp "
         obj.includes = '.'
         obj.target = 'hexapod'
-        obj.uselib = 'ODE BOOST EIGEN2  OSG'
+        obj.uselib = 'ODE BOOST EIGEN  OSG'
         obj.uselib_local = 'robdyn robdyn_osgvisitor'
 
     # install all includes (custom-made)
