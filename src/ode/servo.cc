@@ -177,10 +177,12 @@ namespace ode
       dJointGetBallAnchor(_ball, p);
     Eigen::Vector3d pos(p[0], p[1], p[2]);
     Eigen::Vector3d v = v1 - v2;
-
+    */
      //get torques
     Eigen::Vector3d t1(_feedback.t1[0], _feedback.t1[1], _feedback.t1[2]);
     Eigen::Vector3d t2(_feedback.t2[0], _feedback.t2[1], _feedback.t2[2]);
+    _torque=t1.norm();
+    /*
      //forces
     Eigen::Vector3d f1(_feedback.f1[0], _feedback.f1[1], _feedback.f1[2]);
     Eigen::Vector3d f2(_feedback.f2[0], _feedback.f2[1], _feedback.f2[2]);
