@@ -36,9 +36,10 @@ def configure(conf):
     eigen_found = conf.check_tool('eigen')
     conf.check_tool('boost')
     conf.check_boost(lib='', min_version='1.35')
-    conf.env['LIB_OSG'] = [ 'GLU', 'osg', 'osgDB', 'osgUtil', 'osgGA',
+    conf.env['LIB_OSG'] = [ 'osg', 'osgDB', 'osgUtil', 'osgGA', #GLU GL
                            'osgViewer', 'OpenThreads', 
-                           'osgFX', 'osgShadow', 'osgTerrain', 'GL']
+                            'osgFX', 'osgShadow', 'osgTerrain']
+    conf.env['LIB_ODE'] += ['pthread']
 
     if Options.options.disable_osg == "yes":
 	osg_flag = ' -DNO_OSG'
@@ -56,7 +57,7 @@ def configure(conf):
 
     # release
     conf.setenv('default')
-    opt_flags = common_flags +  ' -DNDEBUG -O3 -fomit-frame-pointer -finline-functions -ftracer -funroll-loops -fvariable-expansion-in-unroller -fstrict-aliasing -ffast-math'
+    opt_flags = common_flags +  ' -DNDEBUG -O3 -fomit-frame-pointer -finline-functions -ftracer -funroll-loops -fstrict-aliasing -ffast-math'
 
     opt_flags += ' -mfpmath=sse -march=core2 -msse2'
 
