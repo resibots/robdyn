@@ -169,8 +169,7 @@ namespace ode
 
      //probably useless
     dJointGetFeedback(_amotor);
-<<<<<<< HEAD
-=======
+
     const dReal*r1 = dBodyGetAngularVel(_o1.get_body());
     Eigen::Vector3d v1(r1[0], r1[1], r1[2]);
     const dReal*r2 = dBodyGetAngularVel(_o2.get_body());
@@ -180,17 +179,17 @@ namespace ode
     Eigen::Vector3d pos(p[0], p[1], p[2]);
     Eigen::Vector3d v = v1 - v2;
     */
->>>>>>> 1c30e72daaa1560793f068f48efeb850b3812084
+
      //get torques
     Eigen::Vector3d t1(_feedback.t1[0], _feedback.t1[1], _feedback.t1[2]);
     Eigen::Vector3d t2(_feedback.t2[0], _feedback.t2[1], _feedback.t2[2]);
     _torque=t1.norm();
+
     /*
      //forces
     Eigen::Vector3d f1(_feedback.f1[0], _feedback.f1[1], _feedback.f1[2]);
     Eigen::Vector3d f2(_feedback.f2[0], _feedback.f2[1], _feedback.f2[2]);
-    
-    _torque = t1.norm();
+    */
 
   }
 
