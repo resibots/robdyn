@@ -13,7 +13,7 @@ namespace ode
     {
     public:
         typedef boost::shared_ptr<Mx28> ptr_t;
-        static const float angular_vel = 6.28; //45rpm
+      BOOST_STATIC_CONSTEXPR float angular_vel = 6.28; //45rpm
         Mx28(Environment& env,
              const Eigen::Vector3d& anchor,
              Object& o1, Object& o2,

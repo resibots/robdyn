@@ -32,7 +32,7 @@ namespace ode
   class Sphere : public Object
   {
   public:
-    static const float standard_mass = 1;
+    BOOST_STATIC_CONSTEXPR float standard_mass = 1;
     Sphere(Environment& env, 
 	   const Eigen::Vector3d& pos, 
 	   float mass, 

@@ -13,7 +13,7 @@ namespace ode
   {
   public:
     typedef boost::shared_ptr<Ax12> ptr_t;
-    static const float angular_vel = 150.0 / 1024.0 * 11.9;
+    BOOST_STATIC_CONSTEXPR float angular_vel = 150.0 / 1024.0 * 11.9;
     Ax12(Environment& env,
 	 const Eigen::Vector3d& anchor,
 	 Object& o1, Object& o2,
