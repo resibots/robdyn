@@ -13,7 +13,7 @@
 #include <osgShadow/MinimalCullBoundsShadowMap>
 #include <osgShadow/ParallelSplitShadowMap>
 #include <osgShadow/LightSpacePerspectiveShadowMap>
-#include <osgShadow/ViewDependentShadowMap>
+//#include <osgShadow/ViewDependentShadowMap>
 
 #include <osgDB/WriteFile>
 #include <boost/lexical_cast.hpp>
