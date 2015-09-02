@@ -7,10 +7,12 @@ def set_options(opt) :
 
 def configure(conf) :
     conf.env['LIB_ROBDYN'] = ['robdyn']
-    if Options.options.robdyn_osg:
+    if Options.options.robdyn_osg == 'yes':
+        print 'osg is activated'
         conf.env['LIB_ROBDYN'] += ['robdyn_osgvisitor']
 	conf.env['NO_OSG'] = False
     else:
+        print 'osg is not activated'
         osg_flag = ' -DNO_OSG'
 	conf.env['NO_OSG'] = True
     if Options.options.robdyn:
