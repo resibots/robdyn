@@ -1,0 +1,21 @@
+#! /usr/bin/env python
+import Options;
+
+def set_options(opt) :
+    opt.add_option('--robdyn', type='string', help='path to robdyn lib', dest='robdyn')
+    opt.add_option('--robdyn-osg', type='string', dest='robdyn_osg', help='enable osg')
+
+def configure(conf) :
+    conf.env['LIB_ROBDYN'] = ['robdyn']
+    if Options.options.robdyn_osg:
+        conf.env['LIB_ROBDYN'] += ['robdyn_osgvisitor']
+	conf.env['NO_OSG'] = False
+    else:
+        osg_flag = ' -DNO_OSG'
+	conf.env['NO_OSG'] = True
+    if Options.options.robdyn:
+        conf.env['CPPPATH_ROBDYN'] = Options.options.robdyn + '/include/robdyn'
+        conf.env['LIBPATH_ROBDYN'] = Options.options.robdyn + '/lib'
+
+def build(bld):
+    pass

@@ -127,7 +127,7 @@ int main()
         ctrl.push_back(0.25); // Phase mot 2
 
     */
-    
+
      // marche TEST
 
     /*
@@ -181,7 +181,7 @@ int main()
             ctrl.push_back(0.75); // Phase mot 2
 
 
-    
+
     */
 
 
@@ -263,7 +263,7 @@ int main()
     boost::shared_ptr<ode::Environment_hexa> env2(new ode::Environment_hexa());
     boost::shared_ptr<ode::Environment_hexa> env(new ode::Environment_hexa());
     robot_t rob2 = robot_t(new robot::Hexapod(*env2, Eigen::Vector3d(0, 0, 0.1),brokenLegs));
- 
+
     ControllerPhase controller(ctrl,brokenLegs);
 
     //    rob2->accept(v);
@@ -292,19 +292,19 @@ int main()
 
 
    robot_t rob = rob2->clone(*env);
-   rob->accept(v); 
-
+   rob->accept(v);
+   //v.enable_dump("frame");
     struct timeval timev_init;  // Initial absolute time (static)
     struct timeval timev_diff;  // Previous tick absolute time
     struct timeval timev_cur;   // Current absolute time
     Eigen::Vector3d prev_pos = rob->pos();
-  
+
     gettimeofday(&timev_init, NULL);
-   
+
     float t=0;
     while (!v.done() && t<10 )
       {
-	
+
 	//for(int i=0;i< rob->servos().size();i++)
 	// rob->servos()[i]->set_angle(ode::Servo::DIHEDRAL, cos(t));
 
@@ -315,20 +315,20 @@ int main()
 
 
 	controller.moveRobot(rob,t);
-	
+
 	rob->next_step(step);
 	env->next_step(step);
 	 v.update();
 	t += step;
 	usleep(10000);
-	
+
       }
-    
+
     gettimeofday(&timev_cur, NULL);
     timersub(&timev_cur, &timev_init, &timev_diff);
-    
+
     std::cout<<"time duration "<<timev_diff.tv_sec<< "seconde et "<< timev_diff.tv_usec<< " micro secondes"<<std::endl;
-    
+
     Eigen::Vector3d next_pos = rob->pos();
     //_covered_distance = fabs(next_pos[0] - prev_pos[0]);
     std::cout<<"dist"<<sqrt((next_pos[0] - prev_pos[0])*(next_pos[0] - prev_pos[0])+(next_pos[1] - prev_pos[1])*(next_pos[1] - prev_pos[1]))<<std::endl;
@@ -337,4 +337,3 @@ int main()
 
     return 0;
 }
-
