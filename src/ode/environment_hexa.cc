@@ -53,11 +53,11 @@ namespace ode
 	  break;
 	}
     }
-  
+
    void Environment_hexa::_collision(dGeomID o1, dGeomID o2)
   {
-   
-    
+
+
     int g1 ;
     if(_ground_objects.find(o1) != _ground_objects.end())
       g1=-1;
@@ -90,7 +90,7 @@ namespace ode
       g2=4;
     else if(_leg5_objects.find(o2) != _leg5_objects.end())
       g2=5;
-    else 
+    else
       g2=6; // main body
 
     //if (!(g1==-1 ^ g2==-1))
@@ -100,7 +100,7 @@ namespace ode
       return;
 
 
-   
+
     static const int N = 10;
     int i, n;
     dContact contact[N];
@@ -119,7 +119,7 @@ namespace ode
 	  }*/
     if (n > 0)
       {
-	
+
 	if(g1!=-1 && g2!=-1) //colision between legs
 	  {
 	    //std::cout<<"colision "<<g1 <<" et "<<g2<<std::endl;
@@ -140,25 +140,25 @@ namespace ode
 	Object*o = (Object *)dBodyGetData(b);
 	if (dBodyGetData(b))
 	  o->set_in_contact(true);
-	 
+
 	for (i = 0; i < n; i++)
 	  {
 	    contact[i].surface.mode = dContactSlip1 | dContactSlip2 |
 	      dContactSoftERP | dContactSoftCFM | dContactApprox1;
-	    contact[i].surface.mu = 0.8;//dInfinity;
-	      contact[i].surface.slip1 = 0.01;// 0.01;
-	      contact[i].surface.slip2 = 0.01;//0.01;
+	    contact[i].surface.mu = 0.9;//0.8;//dInfinity;//0.4 for inria?
+	      contact[i].surface.slip1 = 0.02;// 0.01;
+	      contact[i].surface.slip2 = 0.02;//0.01;
 	      contact[i].surface.soft_erp = 0.1;
 	      contact[i].surface.soft_cfm = 0.001; //penetration/softness
 
 
-	    
+
 	    dJointID c = dJointCreateContact(get_world(), get_contactgroup(),
 					     &contact[i]);
 	    dJointAttach(c,
 			 dGeomGetBody(contact[i].geom.g1),
 			 dGeomGetBody(contact[i].geom.g2));
-	    
+
 	    // grass
         // dBodyID obj = 0;
         // if (g1 && o1 == _ground) // g2 is our object
@@ -178,9 +178,9 @@ namespace ode
         //   }
 	  }
       }
-    
-    
+
+
   }
-  
-  
+
+
 } //namespace ode
