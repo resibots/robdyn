@@ -51,21 +51,42 @@ namespace renderer
       _node_ref(NULL)
     {
       _viewer.realize();
-      osgViewer::WindowSizeHandler *wsh=new osgViewer::WindowSizeHandler;
-      _viewer.addEventHandler(wsh);
-      //wsh->setToggleFullscreen(false); // ne marche pas...
-      //std::cout<<"ToggleFullscreen="<<wsh->getToggleFullscreen()<<std::endl;
       _tm->setRotationMode(osgGA::NodeTrackerManipulator::TRACKBALL);
       _tm->setTrackerMode(osgGA::NodeTrackerManipulator::NODE_CENTER);
 
       //      _create_ground();
       if (_camera_type != FIXED)
-	_viewer.setCameraManipulator(new osgGA::TrackballManipulator());
+          _viewer.setCameraManipulator(new osgGA::TrackballManipulator());
+
       _viewer.addEventHandler(new osgViewer::StatsHandler);
       _viewer.addEventHandler(_keh.get());
 
       //      _hud = new OsgHud(_shadowed_scene.get());
     }
+
+    /* Overloading OsgVisitor with dimensions to set up windowed mode
+     * instead of fullscreen
+     */
+    OsgVisitor(int width, int height, int x = 0, int y = 0, int screenNum = 0,
+            camera_t cam = FOLLOW) :
+      _root(new osg::Group()),
+      _tm(new osgGA::NodeTrackerManipulator),
+      _keh(new KeyboardEventHandler()),
+      _first(true),
+      _camera_type(cam),
+      _node_ref(NULL)
+    {
+        _viewer.setUpViewInWindow(x, y, width, height, screenNum);
+        _viewer.realize();
+        _tm->setRotationMode(osgGA::NodeTrackerManipulator::TRACKBALL);
+        _tm->setTrackerMode(osgGA::NodeTrackerManipulator::NODE_CENTER);
+        if (_camera_type != FIXED)
+            _viewer.setCameraManipulator(new osgGA::TrackballManipulator());
+
+        _viewer.addEventHandler(new osgViewer::StatsHandler);
+        _viewer.addEventHandler(_keh.get());
+   }
+   
     void init() {}
     // update must be called after the first visit
     void update()
