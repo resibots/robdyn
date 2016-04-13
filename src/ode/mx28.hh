@@ -61,7 +61,7 @@ namespace ode
 	  dJointSetAMotorParam(_amotor, dParamLoStop3, _lim_min[2]);
 	  dJointSetAMotorParam(_amotor, dParamHiStop3, _lim_max[2]);
 	  
-	  static const double fmax = 1.5;
+      static const double fmax = 1.5;
 	  dJointSetAMotorParam(_amotor, dParamFMax, fmax);
 	  dJointSetAMotorParam(_amotor, dParamFMax2, fmax);
 	  dJointSetAMotorParam(_amotor, dParamFMax3, fmax);
@@ -163,10 +163,10 @@ namespace ode
 	  dJointSetAMotorParam(_amotor, dParamHiStop,  _lim_max[0]);
 	  dJointSetAMotorParam(_amotor, dParamLoStop2, _lim_min[1]);
 	  dJointSetAMotorParam(_amotor, dParamHiStop2, _lim_max[1]);
-	  dJointSetAMotorParam(_amotor, dParamLoStop3, _lim_min[2]);
+      dJointSetAMotorParam(_amotor, dParamLoStop3, _lim_min[2]);
 	  dJointSetAMotorParam(_amotor, dParamHiStop3, _lim_max[2]);
 
-	  static const double fmax = 1.5;
+      static const double fmax = 1.5;
 	  dJointSetAMotorParam(_amotor, dParamFMax, fmax);
 	  dJointSetAMotorParam(_amotor, dParamFMax2, fmax);
 	  dJointSetAMotorParam(_amotor, dParamFMax3, fmax);

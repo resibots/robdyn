@@ -29,158 +29,162 @@
 
 namespace ode
 {
-  void Environment_hexa::add_leg_object(int leg,ode::Object& o)
-  {
-      switch(leg)
-	{
-	case 0:
-	  _leg0_objects.insert(o.get_geom());
-	  break;
-	case 1:
-	  _leg1_objects.insert(o.get_geom());
-	  break;
-	case 2:
-	  _leg2_objects.insert(o.get_geom());
-	  break;
-	case 3:
-	  _leg3_objects.insert(o.get_geom());
-	  break;
-	case 4:
-	  _leg4_objects.insert(o.get_geom());
-	  break;
-	case 5:
-	  _leg5_objects.insert(o.get_geom());
-	  break;
-	}
+void Environment_hexa::add_leg_object(int leg,ode::Object& o)
+{
+    switch(leg)
+    {
+    case 0:
+        _leg0_objects.insert(o.get_geom());
+        break;
+    case 1:
+        _leg1_objects.insert(o.get_geom());
+        break;
+    case 2:
+        _leg2_objects.insert(o.get_geom());
+        break;
+    case 3:
+        _leg3_objects.insert(o.get_geom());
+        break;
+    case 4:
+        _leg4_objects.insert(o.get_geom());
+        break;
+    case 5:
+        _leg5_objects.insert(o.get_geom());
+        break;
     }
-  
-   void Environment_hexa::_collision(dGeomID o1, dGeomID o2)
-  {
-   
-    
-    int g1 ;
-    if(_ground_objects.find(o1) != _ground_objects.end())
-      g1=-1;
-    else if(_leg0_objects.find(o1) != _leg0_objects.end())
-      g1=0;
-    else if(_leg1_objects.find(o1) != _leg1_objects.end())
-      g1=1;
-    else if(_leg2_objects.find(o1) != _leg2_objects.end())
-      g1=2;
-    else if(_leg3_objects.find(o1) != _leg3_objects.end())
-      g1=3;
-    else if(_leg4_objects.find(o1) != _leg4_objects.end())
-      g1=4;
-    else if(_leg5_objects.find(o1) != _leg5_objects.end())
-      g1=5;
-    else
-      g1=6; //main body
-    int g2 ;
-    if(_ground_objects.find(o2) != _ground_objects.end()) //ground
-      g2=-1;
-    else if(_leg0_objects.find(o2) != _leg0_objects.end())
-      g2=0;
-    else if(_leg1_objects.find(o2) != _leg1_objects.end())
-      g2=1;
-    else if(_leg2_objects.find(o2) != _leg2_objects.end())
-      g2=2;
-    else if(_leg3_objects.find(o2) != _leg3_objects.end())
-      g2=3;
-    else if(_leg4_objects.find(o2) != _leg4_objects.end())
-      g2=4;
-    else if(_leg5_objects.find(o2) != _leg5_objects.end())
-      g2=5;
-    else 
-      g2=6; // main body
+}
 
-    //if (!(g1==-1 ^ g2==-1))
-    // return;
+void Environment_hexa::add_leglastsubsegment_object(ode::Object& o)
+{
+    _leg_lastsubsegments_objects.push_back(o.get_geom());
+}
+
+
+void Environment_hexa::_collision(dGeomID o1, dGeomID o2)
+{
+    bool g1_thirdlegsegment, g2_thirdlegsegment;
+    assert(_leg_lastsubsegments_objects.size()==6);
+    
+    int g1 ; g1_thirdlegsegment = false;
+    if(_ground_objects.find(o1) != _ground_objects.end())
+        g1=-1; // g1 object is the ground
+    else if(_leg0_objects.find(o1) != _leg0_objects.end())
+        g1=0; // g1 object is one of the three segments of the leg 0 (segments inserted into _leg0_objects in increasing order of distance to main body)
+    else if(_leg1_objects.find(o1) != _leg1_objects.end())
+        g1=1; // g1 object is one of the three segments of the leg 1 (segments inserted into _leg0_objects in increasing order of distance to main body)
+    else if(_leg2_objects.find(o1) != _leg2_objects.end())
+        g1=2; // g1 object is one of the three segments of the leg 2 (segments inserted into _leg0_objects in increasing order of distance to main body)
+    else if(_leg3_objects.find(o1) != _leg3_objects.end())
+        g1=3; // g1 object is one of the three segments of the leg 3 (segments inserted   in increasing order of distance to main body)
+    else if(_leg4_objects.find(o1) != _leg4_objects.end())
+        g1=4; // g1 object is one of the three segments of the leg 4 (segments inserted   in increasing order of distance to main body)
+    else if(_leg5_objects.find(o1) != _leg5_objects.end())
+        g1=5; // g1 object is one of the three segments of the leg 5 (segments inserted   in increasing order of distance to main body)
+    else
+        g1=6; //main body // the g1 object is the
+
+    int g2 ; g2_thirdlegsegment = false;
+    if(_ground_objects.find(o2) != _ground_objects.end()) //ground
+        g2=-1;
+    else if(_leg0_objects.find(o2) != _leg0_objects.end())
+        g2=0;
+    else if(_leg1_objects.find(o2) != _leg1_objects.end())
+        g2=1;
+    else if(_leg2_objects.find(o2) != _leg2_objects.end())
+        g2=2;
+    else if(_leg3_objects.find(o2) != _leg3_objects.end())
+        g2=3;
+    else if(_leg4_objects.find(o2) != _leg4_objects.end())
+        g2=4;
+    else if(_leg5_objects.find(o2) != _leg5_objects.end())
+        g2=5;
+    else
+        g2=6; // main body
 
     if(g1==g2 || (g1==6 && g2!=-1) || (g1!=-1 && g2==6)) //contact between same part of the robot (or world)
-      return;
+        return;
 
 
-   
     static const int N = 10;
     int i, n;
     dContact contact[N];
-    n = dCollide(o1, o2, N, &contact[0].geom, sizeof(dContact));
+    n = dCollide(o1, o2, N, &contact[0].geom, sizeof(dContact)); //N is the maximum number of contacts
 
-    /*dBodyID b = 0;  //don't work anymore with collision between leg detection
-    if (g1 && o2)
-      b = dGeomGetBody(o2);
-    else if (o1)
-      b = dGeomGetBody(o1);
-    if (b)
-      {
-	Object*o = (Object *)dBodyGetData(b);
-	if (dBodyGetData(b))
-	  o->set_in_contact(true);
-	  }*/
     if (n > 0)
-      {
-	
-	if(g1!=-1 && g2!=-1) //colision between legs
-	  {
-	    //std::cout<<"colision "<<g1 <<" et "<<g2<<std::endl;
-	    _colision_between_legs=true;
-	    return;
-	  }
+    {
+
+        if(g1!=-1 && g2!=-1) //colision between legs
+        {
+            _colision_between_legs=true;
+            return;
+        }
+
+        dBodyID b = 0;
+        if(g1==-1) //so g2 is in contact with the ground
+        {
+            b = dGeomGetBody(o2);
+        }
+        else //so g1 in in contact with the ground
+        {
+            b = dGeomGetBody(o1);
+        }
+        Object*o = (Object *)dBodyGetData(b);
+        if (dBodyGetData(b))
+            o->set_in_contact(true);
 
 
-	dBodyID b = 0;
-	if(g1==-1) //so g2 is in contact with the ground
-	  {
-	    b = dGeomGetBody(o2);
-	  }
-	else //so g1 in in contact with the ground
-	  {
-	    b = dGeomGetBody(o1);
-	  }
-	Object*o = (Object *)dBodyGetData(b);
-	if (dBodyGetData(b))
-	  o->set_in_contact(true);
-	 
-	for (i = 0; i < n; i++)
-	  {
-	    contact[i].surface.mode = dContactSlip1 | dContactSlip2 |
-	      dContactSoftERP | dContactSoftCFM | dContactApprox1;
-	    contact[i].surface.mu = 0.8;//dInfinity;
-	      contact[i].surface.slip1 = 0.01;// 0.01;
-	      contact[i].surface.slip2 = 0.01;//0.01;
-	      contact[i].surface.soft_erp = 0.1;
-	      contact[i].surface.soft_cfm = 0.001; //penetration/softness
+        g1_thirdlegsegment = false; g2_thirdlegsegment = false;
+        if(g1==-1 && g2>=0 && g2<=5 &&
+                std::find(_leg_lastsubsegments_objects.begin(),_leg_lastsubsegments_objects.end(),o2) != _leg_lastsubsegments_objects.end())
+            g2_thirdlegsegment = true;
+
+        if(g2==-1 && g1>=0 && g1<=5 &&
+                std::find(_leg_lastsubsegments_objects.begin(),_leg_lastsubsegments_objects.end(),o1) != _leg_lastsubsegments_objects.end())
+            g1_thirdlegsegment = true;
+
+        size_t GRF_on_leg;
+        if(g1_thirdlegsegment || g2_thirdlegsegment)
+            g1_thirdlegsegment ? GRF_on_leg = g1 : GRF_on_leg = g2;
+
+        for (i = 0; i < n; i++)
+        {
+            contact[i].surface.mode = dContactSlip1 | dContactSlip2 |
+                    dContactSoftERP | dContactSoftCFM | dContactApprox1;
+            contact[i].surface.mu = 0.8;//dInfinity;
+            contact[i].surface.slip1 = 0.01;// 0.01;
+            contact[i].surface.slip2 = 0.01;//0.01;
+            contact[i].surface.soft_erp = 0.1;
+            contact[i].surface.soft_cfm = 0.001; //penetration/softness
 
 
-	    
-	    dJointID c = dJointCreateContact(get_world(), get_contactgroup(),
-					     &contact[i]);
-	    dJointAttach(c,
-			 dGeomGetBody(contact[i].geom.g1),
-			 dGeomGetBody(contact[i].geom.g2));
-	    
-	    // grass
-        // dBodyID obj = 0;
-        // if (g1 && o1 == _ground) // g2 is our object
-        //   obj = dGeomGetBody(o2);
-        // else if (g2 && o2 == _ground)
-        //   obj = dGeomGetBody(o1);
-        // if (obj)
-        //   {
-        //      dVector3 vel;
-        //      dBodyGetPointVel(obj,
-        //                       contact[i].geom.pos[0],
-        //                       contact[i].geom.pos[1],
-        //                       contact[i].geom.pos[2],
-        //                       vel);
-        //      dBodyAddForce(obj, -vel[0]*200, -vel[1]*200, 0);
-        //      std::cout<<"vel:"<<vel[0]<<std::endl;
-        //   }
-	  }
-      }
-    
-    
-  }
-  
-  
+            dJointID c = dJointCreateContact(get_world(), get_contactgroup(),
+                                             &contact[i]);
+            dJointAttach(c,
+                         dGeomGetBody(contact[i].geom.g1),
+                         dGeomGetBody(contact[i].geom.g2));
+
+            if(g1_thirdlegsegment || g2_thirdlegsegment)
+            {
+                dJointSetFeedback(c, &_feedback_GRF);
+                dJointGetFeedback(c);
+
+                if (i == 0)
+                    assert(_legs_GRF[GRF_on_leg][0] == 0.0f && _legs_GRF[GRF_on_leg][1] == 0.0f && _legs_GRF[GRF_on_leg][2] == 0.0f);
+
+                if(g1_thirdlegsegment)
+                {
+                    _legs_GRF[GRF_on_leg][0] += _feedback_GRF.f1[0]; _legs_GRF[GRF_on_leg][1] += _feedback_GRF.f1[1]; _legs_GRF[GRF_on_leg][2] += _feedback_GRF.f1[2];
+                }
+                else
+                {
+                    _legs_GRF[GRF_on_leg][0] += _feedback_GRF.f2[0]; _legs_GRF[GRF_on_leg][1] += _feedback_GRF.f2[1]; _legs_GRF[GRF_on_leg][2] += _feedback_GRF.f2[2];
+                }
+            }
+        }
+        if(g1_thirdlegsegment || g2_thirdlegsegment)
+        {
+            _legs_GRF[GRF_on_leg][0] /= n; _legs_GRF[GRF_on_leg][1] /= n; _legs_GRF[GRF_on_leg][2] /= n;
+        }
+    }
+}
 } //namespace ode

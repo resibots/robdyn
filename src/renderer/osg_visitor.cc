@@ -13,7 +13,8 @@
 #include <osgShadow/MinimalCullBoundsShadowMap>
 #include <osgShadow/ParallelSplitShadowMap>
 #include <osgShadow/LightSpacePerspectiveShadowMap>
-#include <osgShadow/ViewDependentShadowMap>
+//#include <osgShadow/ViewDependentShadowMap>
+#include <osgShadow/ViewDependentShadowTechnique>
 
 #include <osgDB/WriteFile>
 #include <boost/lexical_cast.hpp>
@@ -223,6 +224,26 @@ namespace renderer
         geode_sqr->setStateSet(ss_checker.get());
         _ground->addChild(pat.get());
       }
+
+#ifdef GRND_OBSTACLES_ROBDYN
+    for(size_t i=0; i<env.obstacle_objects.size(); ++i)
+    {
+        ref_ptr<Geode> geode(new Geode);
+        geode->
+        addDrawable(new ShapeDrawable
+                    (new Sphere(Vec3f(dGeomGetPosition(env.obstacle_objects[i])[0], dGeomGetPosition(env.obstacle_objects[i])[1],
+                                      dGeomGetPosition(env.obstacle_objects[i])[2]), dGeomSphereGetRadius(env.obstacle_objects[i]) )));
+        ref_ptr<PositionAttitudeTransform>  pat(new PositionAttitudeTransform());
+        pat->addChild(geode.get());
+        _ground->addChild(pat.get());
+    }
+#endif
+
+
+
+
+
+
 
     Vec3 center(0.0f, 0.0f, 0.0f);
     float radius = 500;

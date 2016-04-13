@@ -23,10 +23,13 @@
 #ifndef         ENVIRONMENT_HH_
 # define        ENVIRONMENT_HH_
 
+//#define GRND_OBSTACLES_ROBDYN
+
 #include <iostream>
 #include <ode/ode.h>
 #include <ode/common.h>
 #include <set>
+#include <vector>
 #include "misc.hh"
 
 namespace ode
@@ -59,6 +62,16 @@ namespace ode
       {
         _init(add_ground);
       }
+
+#ifdef GRND_OBSTACLES_ROBDYN
+    //Env with obstacles
+    Environment(float floor_angle, std::vector <std::vector <float> > obstacle_pos_rad) :
+        _ground(0x0), _pitch(0), _roll(0), _z(0)
+      {
+        _init_with_obstacles(true, floor_angle, obstacle_pos_rad);
+      }
+#endif
+
      ~Environment()
       {
 
@@ -88,11 +101,15 @@ namespace ode
        //update sim
       void next_step(double dt = time_step)
       {
+         // clear all GRF vectors
+        resetGRF();
+
          //check collisions
         dSpaceCollide(_space_id, (void *)this, &_near_callback);
-         //next step
+        //next step
         dWorldStep(_world_id, dt);
-         //dWorldQuickStep(_world_id, dt);
+        //dWorldQuickStep(_world_id, dt);
+
          // remove all contact joints
         dJointGroupEmpty(_contactgroup);
       }
@@ -108,9 +125,17 @@ namespace ode
       float get_pitch() const { return _pitch; }
       float get_roll() const { return _roll; }
       float get_z() const { return _z; }
+
+
+
     protected:
       std::set<dGeomID> _ground_objects;
-    void _init(bool add_ground,float angle=0);
+      void _init(bool add_ground,float angle=0);
+
+#ifdef GRND_OBSTACLES_ROBDYN
+      void _init_with_obstacles(bool add_ground, float floor_angle, std::vector < std::vector<float> > pos_rad);
+#endif
+
       static void _near_callback(void *data, dGeomID o1, dGeomID o2)
       {
         Environment*env = reinterpret_cast<Environment *>(data);
@@ -118,13 +143,25 @@ namespace ode
       }
       virtual void _collision(dGeomID o1, dGeomID o2);
     public: // ??
+      virtual void printGRF() {}
+      virtual void resetGRF() {}
        // attributes
       dWorldID _world_id;
       dSpaceID _space_id;
       dGeomID _ground;
+
+
       dJointGroupID _contactgroup;
       float _pitch, _roll, _z;
     float angle;
+
+#ifdef GRND_OBSTACLES_ROBDYN
+    dGeomID _obs_geom;
+      std::vector<dGeomID> obstacle_objects;
+    // x,y,z positions of obstacle and radius (all obstacles are spheres)
+    std::vector <std::vector <float> > obstacle_pos_rad;
+#endif
+
   };
 }
 

@@ -54,6 +54,7 @@ def configure(conf):
     common_flags = "-D_REENTRANT -Wall -fPIC -ftemplate-depth-128 -Wno-sign-compare -Wno-deprecated  -Wno-unused " + osg_flag
     cxxflags = conf.env['CXXFLAGS']
 
+
     # release
     conf.setenv('default')
     opt_flags = common_flags +  ' -DNDEBUG -O3 -fomit-frame-pointer -finline-functions -ftracer -funroll-loops -fvariable-expansion-in-unroller -fstrict-aliasing -ffast-math'

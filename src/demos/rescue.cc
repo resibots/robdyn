@@ -13,7 +13,9 @@
 
 
 using namespace ode;
-USING_PART_OF_NAMESPACE_EIGEN
+////USING_PART_OF_NAMESPACE_EIGEN
+using namespace Eigen;
+
 
 namespace robot
 {
